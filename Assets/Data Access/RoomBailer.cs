@@ -21,7 +21,7 @@ public class RoomBailer : MonoBehaviour
         //est-ce qu'il y a un User dispo
         KeyValuePair<int, string> userIdentity = _bddTools.GetAvailablePlayer();
 
-        CreateAndAddPlayer(userIdentity.Key, userIdentity.Value);
+        CreateAndAddPlayer(userIdentity.Key, userIdentity.Value, true);
 
         //TODO Vérif qu'il y ait pas déjà une entrée à cet user_id là dans la BDD
         //Initialiser la position dans la BDD
@@ -57,11 +57,11 @@ public class RoomBailer : MonoBehaviour
     }
 
 
-    private GameObject CreateAndAddPlayer (int userId, string username)
+    private GameObject CreateAndAddPlayer (int userId, string username, bool isPlayer = false)
     {
         GameObject newPlayer = Instantiate(_playerPrefab);
         PlayerData playerData = newPlayer.GetComponent<PlayerData>();
-        playerData.Initialize(userId, username);
+        playerData.Initialize(userId, username, isPlayer);
 
         m_Players.Add(newPlayer);
 

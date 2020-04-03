@@ -9,12 +9,13 @@ public class PlayerData : MonoBehaviour
 
     private PositionSynchronization _positionSynchronization;
 
-    public void Initialize(int userID, string userName)
+    public void Initialize(int userID, string userName, bool isPlayer)
     {
         this._userID = userID;
         this._userName = userName;
 
         _positionSynchronization = GetComponent<PositionSynchronization>();
         _positionSynchronization._playerID = userID;
+        _positionSynchronization._isPlayer = isPlayer;
     }
 }

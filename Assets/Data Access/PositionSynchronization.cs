@@ -6,6 +6,7 @@ public class PositionSynchronization : MonoBehaviour
 {
     private BDDTools _bddTools;
     public int _playerID;
+    public bool _isPlayer;
 
     [SerializeField]
     private Transform _transform;
@@ -26,14 +27,22 @@ public class PositionSynchronization : MonoBehaviour
 
     private void Update()
     {
-        _currentPosition = _transform.position;
-
-        if (_currentPosition != _lastPosition)
+        if (_isPlayer) //Si c'est le joueur, on écrit ses déplacements dans la BDD
         {
-            _bddTools.UpdatePosition((Vector2)_currentPosition);
+            _currentPosition = _transform.position;
+
+            if (_currentPosition != _lastPosition)
+            {
+                _bddTools.UpdatePosition((Vector2)_currentPosition);
+            }
+
+            _lastPosition = _currentPosition;
+        }
+        else //Sinon on récupère la position
+        {
+            GoToBDDPosition();
         }
 
-        _lastPosition = _currentPosition;
     }
 
     public void GoToBDDPosition()
