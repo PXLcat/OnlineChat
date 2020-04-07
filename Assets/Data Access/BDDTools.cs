@@ -122,7 +122,6 @@ public class BDDTools : MonoBehaviour
             WHERE user_id = @user_id
             ");
         cmd.Parameters.AddWithValue("@user_id", id);
-
         using (SqlDataReader dr = cmd.ExecuteReader())
         {
             while (dr.Read())
@@ -210,6 +209,19 @@ public class BDDTools : MonoBehaviour
         }
 
         return result;
+    }
+    public void SendMessageToBDD(string message, DateTime date)
+    {
+        SqlCommand cmd = CreateRequest(@"
+            INSERT INTO Room_Chat
+            VALUES (@user_id, '@time', '@message');
+            ");
+
+        cmd.Parameters.AddWithValue("@user_id", _userID);
+        cmd.Parameters.AddWithValue("@time", "13:30;25"); //date.ToString("hh:mm:ss"));
+        cmd.Parameters.AddWithValue("@message", message);
+
+        cmd.ExecuteNonQuery();
     }
 
     public SqlCommand CreateRequest(string requete)

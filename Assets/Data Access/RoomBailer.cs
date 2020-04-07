@@ -68,4 +68,13 @@ public class RoomBailer : MonoBehaviour
         return newPlayer;
     }
 
+    private void OnGUI()
+    {
+        //Bouton PLAY/PAUSE
+        if (GUI.Button(new Rect(100, 140, 160, 60), "Check for new players"))
+        {
+            CheckNewPlayers();
+        }
+    }
+
 }

@@ -18,14 +18,22 @@ public class PositionSynchronization : MonoBehaviour
 
     private void Awake()
     {
-        _transform = GetComponent<Transform>();
+        _transform = transform.parent.GetComponent<Transform>();
         //A ce moment on ne sait pas si la co est opérationelle ou non comme elle est aussi dans l'Awake
         _bddTools = GameObject.FindGameObjectWithTag(Tags.ConnectionManager).GetComponent<BDDTools>();
 
         _mainCamera = Camera.main;
     }
 
-    private void Update()
+    private void Start()
+    {
+        if (_isPlayer)
+        {
+
+        }
+    }
+
+    private void FixedUpdate()
     {
         if (_isPlayer) //Si c'est le joueur, on écrit ses déplacements dans la BDD
         {
@@ -47,7 +55,8 @@ public class PositionSynchronization : MonoBehaviour
 
     public void GoToBDDPosition()
     {
-        _transform.position = _bddTools.GetPosition(_playerID);
+        Debug.Log("pas le player");
+            _transform.position = _bddTools.GetPosition(_playerID);
     }
 }
 //public struct PointPos

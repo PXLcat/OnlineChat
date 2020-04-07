@@ -14,7 +14,7 @@ public class PlayerData : MonoBehaviour
         this._userID = userID;
         this._userName = userName;
 
-        _positionSynchronization = GetComponent<PositionSynchronization>();
+        _positionSynchronization = GetComponentInChildren<PositionSynchronization>();
         _positionSynchronization._playerID = userID;
         _positionSynchronization._isPlayer = isPlayer;
     }
