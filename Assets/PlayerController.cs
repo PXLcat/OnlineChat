@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("click");
             _transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 

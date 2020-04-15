@@ -6,6 +6,8 @@ TagManager:
   tags:
   - ConnectionManager
   - RoomManager
+  - ChatManager
+  - ChatBubbles
   layers:
   - Default
   - TransparentFX

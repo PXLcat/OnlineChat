@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PositionSynchronization : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class PositionSynchronization : MonoBehaviour
 
     private Camera _mainCamera;
 
+    public UnityEvent callMessagesManager;//il est appelé lui? 
+
     private void Awake()
     {
         _transform = transform.parent.GetComponent<Transform>();
@@ -27,55 +30,41 @@ public class PositionSynchronization : MonoBehaviour
 
     private void Start()
     {
-        if (_isPlayer)
-        {
 
-        }
     }
+
 
     private void FixedUpdate()
     {
+        _currentPosition = _transform.position;
+
         if (_isPlayer) //Si c'est le joueur, on écrit ses déplacements dans la BDD
         {
-            _currentPosition = _transform.position;
 
             if (_currentPosition != _lastPosition)
             {
                 _bddTools.UpdatePosition((Vector2)_currentPosition);
-            }
-
-            _lastPosition = _currentPosition;
+                //change message position event (id, position)
+                GameEvents.current.PlayerPositionChanged(_playerID, _currentPosition);
+            }           
         }
         else //Sinon on récupère la position
         {
-            GoToBDDPosition();
+            _currentPosition = GetBDDPosition();
+            //change message position event (id, position)
+            if (_currentPosition != _lastPosition)
+            {
+                GameEvents.current.PlayerPositionChanged(_playerID, _currentPosition);//attention ça le fait à l'initialisation je crois
+            }
+            _transform.position = _currentPosition;
         }
 
+        _lastPosition = _currentPosition;
     }
 
-    public void GoToBDDPosition()
+    public Vector2 GetBDDPosition()
     {
-        Debug.Log("pas le player");
-            _transform.position = _bddTools.GetPosition(_playerID);
+        return _bddTools.GetPosition(_playerID);
     }
 }
-//public struct PointPos
-//{
-//    public float posX;
-//    public float posY;
 
-//    public PointPos(float posX, float posY)
-//    {
-//        this.posX = posX;
-//        this.posY = posY;
-//    }
-
-//    public static explicit operator PointPos(Vector3 v)
-//    {
-//        return new PointPos(v.x, v.y);
-//    }
-//    public static explicit operator Vector3(PointPos p)
-//    {
-//        return new Vector3(p.posX, p.posY, 0);
-//    }
-//}

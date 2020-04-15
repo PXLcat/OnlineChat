@@ -21,6 +21,7 @@ public class BDDTools : MonoBehaviour
 
         _roomBailer = GameObject.FindGameObjectWithTag(Tags.RoomManager).GetComponent<RoomBailer>();
         _roomBailer.Initialize();
+        //TODO prévenir si la BDD est dispo ou non
     }
 
     private void OpenConnection()
@@ -175,7 +176,7 @@ public class BDDTools : MonoBehaviour
         for (int i = 1; i < currentPlayers.Length; i++)
         //voir si y'a moyen de faire le append et le passage d'arguments dans la même boucle
         {
-            sb.Append("AND Room_Position.user_id != @currentPlayer ");
+            sb.Append(" AND Room_Position.user_id != @currentPlayer"); //espace au début pour pas que ça colle
             sb.Append(i);
         }
 
@@ -212,13 +213,15 @@ public class BDDTools : MonoBehaviour
     }
     public void SendMessageToBDD(string message, DateTime date)
     {
+        string convertedDate = date.ToString("hh:mm:ss");
+
         SqlCommand cmd = CreateRequest(@"
             INSERT INTO Room_Chat
-            VALUES (@user_id, '@time', '@message');
+            VALUES (@user_id, @time, @message);
             ");
 
         cmd.Parameters.AddWithValue("@user_id", _userID);
-        cmd.Parameters.AddWithValue("@time", "13:30;25"); //date.ToString("hh:mm:ss"));
+        cmd.Parameters.AddWithValue("@time", convertedDate);
         cmd.Parameters.AddWithValue("@message", message);
 
         cmd.ExecuteNonQuery();
@@ -230,6 +233,34 @@ public class BDDTools : MonoBehaviour
         cmd.CommandText = requete;
         cmd.CommandType = CommandType.Text;
         return cmd;
+    }
+
+    public List<ChatMessage> GetNewMessages(int mostRecentMsgID)
+    {
+        List<ChatMessage> result = new List<ChatMessage>();
+
+        //On récup tout, c'est le chat manager qui 
+        SqlCommand cmd = CreateRequest(@"
+                SELECT *
+                FROM Room_Chat
+                WHERE message_id > @message_id
+            ");
+        cmd.Parameters.AddWithValue("@message_id", mostRecentMsgID);
+        using (SqlDataReader dr = cmd.ExecuteReader())
+        {
+            while (dr.Read())
+            {
+                result.Add(new ChatMessage(
+                    dr.GetInt32(dr.GetOrdinal("message_id")),
+                    dr.GetInt32(dr.GetOrdinal("user_id")),
+                    DateTime.Today + dr.GetTimeSpan(dr.GetOrdinal("time")), //pas error-proof
+                    dr.GetString(dr.GetOrdinal("message")).Trim()
+                    ));
+
+            }
+        }
+            
+        return result;
     }
 
 }

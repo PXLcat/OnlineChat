@@ -9,4 +9,6 @@ public const string Player = "Player";
 public const string GameController = "GameController";
 public const string ConnectionManager = "ConnectionManager";
 public const string RoomManager = "RoomManager";
+public const string ChatManager = "ChatManager";
+public const string ChatBubbles = "ChatBubbles";
 }
